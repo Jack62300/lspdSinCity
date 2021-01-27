@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annonces index{% endblock %}
+
+{% block body %}
+   <nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <a href="{{path('dashboard')}}"><li class="breadcrumb-item" aria-current="page">Home</li></a>/
+    <li class="breadcrumb-item active" aria-current="page">Liste des casiers</li>
+  </ol>
+</nav>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Nom Prenom</th>
+                <th>Numéro</th>
+                <th>Lecture Miranda</th>
+                <th>Temps de Gav/Prison</th>
+                <th>Inculpation retenue</th>
+                
+                <th>Amende reçu Total</th>
+                <th>Tig/Gav</th>
+                <th>Biens Saisie ?</th>
+                <th>Comparution devant Magistrat</th>
+                <th>Avocat </th>
+                <th>Cloturer par l'agent </th>
+                <th>Archivé ?</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for annonce in annonces %}
+        {% if annonce.archives == 0 %}
+            <tr>
+                <td>{{ annonce.id }}</td>
+                <td>{{ annonce.title }}</td>
+                <td>{{ annonce.numero }}</td>
+                <td>{{ annonce.droit }}</td>
+                <td>{{ annonce.arrestation|raw }}</td>
+                <td>{{ annonce.inculpation|raw }}</td>
+                
+                <td>{{ annonce.amende }}</td>
+                <td><span class="badge badge-primary">{{ annonce.tigGav }}</span></td>
+                <td><span class="badge badge-primary">{{ annonce.biens }}</span></td>
+                <td><span class="badge badge-success">{% if annonce.comparution %}Oui</span>{% else %}<span class="badge badge-danger">Non{% endif %}</span></td>
+                <td><span class="badge badge-primary">{{ annonce.avocat }}</span></td>
+                <td><span class="badge badge-primary">{{ annonce.cloture }}</span></td>
+                <td>{% if annonce.archives %}Oui{% else %}Non{% endif %}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('annonces_show', {'id': annonce.id}) }}">Voir</a>
+                    {% if app.user.autorisationCasier > 0  %} 
+                    <a class="btn btn-warning" href="{{ path('annonces_edit', {'id': annonce.id}) }}">Edité</a>
+                    
+                    {% elseif app.user.matricule == annonce.cloture %}
+                        <a class="btn btn-warning" href="{{ path('annonces_edit', {'id': annonce.id}) }}">Edité</a>         
+                    {% else %}
+
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun Casier disponible</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-success" href="{{ path('annonces_new') }}">Création de casier</a>
+{% endblock %}

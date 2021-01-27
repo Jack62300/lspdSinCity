@@ -1,0 +1,30 @@
+html,body{
+  margin:0 !important;
+}
+form{
+  max-width: 25% !important;
+  padding:10px !important;
+}
+.bg-light{
+  background-color: #555 !important;
+  color: white !important;
+}
+.nav-link
+{
+  color: white !important;
+}
+#boxew{
+  padding: 10px !important;
+  max-width: 25% !important;
+  margin-left: 25% !important;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 5px 5px;
+  grid-template-areas:
+    ". . . ."
+    ". . . ."
+    ". . . .";
+}

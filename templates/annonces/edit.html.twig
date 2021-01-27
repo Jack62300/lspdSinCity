@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Annonces{% endblock %}
+
+{% block stylesheets %}
+<style>
+input[type=checkbox] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+}
+input[type=checkbox] {
+    border-radius: 4px;
+    height: 25px;
+    width: 25px;
+    background: #333;
+    border: 2px solid #dcdcdc;
+}
+input[type="checkbox"]:checked {
+  background: green;
+  margin:0px;
+  position: relative;
+  &:before {
+    font-family: FontAwesome;
+    content: '\f00c';
+    display: block;
+    color: grey;
+    font-size: 13px;
+    position: absolute;
+  }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<div style="max-width: 50%; padding:10px; margin-left:25%;">
+    <h1>Edition du casier id #{{annonce.id}}</h1>
+
+    {{ include('annonces/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('annonces_index') }}">back to list</a>
+
+    {{ include('annonces/_delete_form.html.twig') }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/images.js') }}"></script>
+{% endblock %}
