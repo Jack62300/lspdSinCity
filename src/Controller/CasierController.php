@@ -2,103 +2,42 @@
 
 namespace App\Controller;
 
-use App\Entity\Images;
-use App\Entity\Suspect;
-use App\Entity\Annonces;
-use App\Form\AnnoncesType;
-use App\Repository\SuspectRepository;
-use App\Repository\AnnoncesRepository;
+use App\Entity\Casier;
+use App\Form\CasierType;
+use App\Entity\ImageCasier;
+use App\Repository\CasierRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @Route("/casiers")
+ * @Route("/casier")
  */
-class AnnoncesController extends AbstractController
+class CasierController extends AbstractController
 {
     /**
-     * @Route("/", name="annonces_index", methods={"GET"})
-     * @IsGranted("ROLE_USER")
+     * @Route("/casier", name="casier_index", methods={"GET"})
      */
-    public function index(AnnoncesRepository $annoncesRepository): Response
+    public function index(CasierRepository $casierRepository): Response
     {
-        return $this->render('annonces/index.html.twig', [
-            'annonces' => $annoncesRepository->findAll(),
+        return $this->render('casier/index.html.twig', [
+            'casiers' => $casierRepository->findAll(),
         ]);
     }
 
-
     /**
-     * @Route("/new", name="annonces_new", methods={"GET","POST"})
+     * @Route("/casier/new", name="casier_new", methods={"GET","POST"})
      */
     public function new(Request $request): Response
     {
-        $annonce = new Annonces();
-        $form = $this->createForm(AnnoncesType::class, $annonce);
+        $casier = new Casier();
+        $form = $this->createForm(CasierType::class, $casier);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // On récupère les images transmises
-            $images = $form->get('images')->getData();
-            
-            // On boucle sur les images
-            foreach($images as $image){
-                // On génère un nouveau nom de fichier
-                $fichier = md5(uniqid()).'.'.$image->guessExtension();
-                
-                // On copie le fichier dans le dossier uploads
-                $image->move(
-                    $this->getParameter('images_directory'),
-                    $fichier
-                );
-                $user = $this->getUser();
-                // On crée l'image dans la base de données
-                $img = new Images();
-                $img->setName($fichier);
-                $annonce->addImage($img);
-                $annonce->setCloture($user->getMatricule());
-            }
-        
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($annonce);
-            $entityManager->flush();
-        
-            return $this->redirectToRoute('suspect_index');
-        }
-
-        return $this->render('annonces/new.html.twig', [
-            'annonce' => $annonce,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="annonces_show", methods={"GET"})
-     */
-    public function show(Annonces $annonce): Response
-    {
-        
-        return $this->render('annonces/show.html.twig', [
-            'annonce' => $annonce,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="annonces_edit", methods={"GET","POST"})
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function edit(Request $request, Annonces $annonce): Response
-    {
-        $form = $this->createForm(AnnoncesType::class, $annonce);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // On récupère les images transmises
-            $images = $form->get('images')->getData();
+            $images = $form->get('imageCasiers')->getData();
             
             // On boucle sur les images
             foreach($images as $image){
@@ -112,42 +51,92 @@ class AnnoncesController extends AbstractController
                 );
                 
                 // On crée l'image dans la base de données
-                $img = new Images();
+                $img = new ImageCasier();
                 $img->setName($fichier);
-                $annonce->addImage($img);
+                $annonce->addAnnonceId($img);
             }
         
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($annonce);
             $entityManager->flush();
         
-            return $this->redirectToRoute('suspect_index');
+            return $this->redirectToRoute('casier_index');
         }
 
-        return $this->render('annonces/edit.html.twig', [
-            'annonce' => $annonce,
+        return $this->render('casier/new.html.twig', [
+            'casier' => $casier,
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="annonces_delete", methods={"DELETE"})
-     * @IsGranted("ROLE_ADMIN")
+     * @Route("casier/show/{id}", name="casier_show", methods={"GET"})
      */
-    public function delete(Request $request, Annonces $annonce): Response
+    public function show(Casier $casier): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$annonce->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($annonce);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('suspect_index');
+        return $this->render('casier/show.html.twig', [
+            'casier' => $casier,
+        ]);
     }
 
     /**
- * @Route("/supprime/image/{id}", name="annonces_delete_image", methods={"DELETE"})
- * @IsGranted("ROLE_ADMIN")
+     * @Route("casier/edit/{id}", name="casier_edit", methods={"GET","POST"})
+     */
+    public function edit(Request $request, Casier $casier): Response
+    {
+        $form = $this->createForm(CasierType::class, $casier);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // On récupère les images transmises
+            $images = $form->get('imageCasiers')->getData();
+            
+            // On boucle sur les images
+            foreach($images as $image){
+                // On génère un nouveau nom de fichier
+                $fichier = md5(uniqid()).'.'.$image->guessExtension();
+                
+                // On copie le fichier dans le dossier uploads
+                $image->move(
+                    $this->getParameter('images_directory'),
+                    $fichier
+                );
+                
+                // On crée l'image dans la base de données
+                $img = new Images();
+                $img->setName($fichier);
+                $img->addImage($img);
+            }
+        
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($img);
+            $entityManager->flush();
+        
+            return $this->redirectToRoute('annonces_index');
+        }
+
+        return $this->render('casier/edit.html.twig', [
+            'casier' => $casier,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/casier/delete/{id}", name="casier_delete", methods={"DELETE"})
+     */
+    public function delete(Request $request, Casier $casier): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$casier->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($casier);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('casier_index');
+    }
+
+    /**
+ * @Route("/casier/supprime/image/{id}", name="annonces_delete_image", methods={"DELETE"})
  */
 public function deleteImage(Images $image, Request $request){
     $data = json_decode($request->getContent(), true);

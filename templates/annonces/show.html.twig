@@ -4,7 +4,7 @@
 
 {% block body %}
 <div style="max-width: 65%; padding:10px; margin-left:20%;">
-    <h1>CASIER JUDICIAIRE numéro : {{ annonce.id }} de {{ annonce.title }}</h1>
+    <h1>CASIER JUDICIAIRE numéro : {{ annonce.id }} de {{ annonce.suspect.nom }}</h1>
 
     <table class="table">
         <tbody>
@@ -14,7 +14,10 @@
             </tr>
             <tr>
                 <th>Nom Prenom</th>
-                <td>{{ annonce.title }}</td>
+                 {% if annonce.suspect.nom is defined %}
+                <td style="color:red">{{ annonce.suspect.nom }}</td>
+                {% endif %}
+                
             </tr>
             <tr>
                 <th>Numero</th>

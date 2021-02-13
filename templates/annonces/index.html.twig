@@ -18,23 +18,25 @@
                 <th>Lecture Miranda</th>
                 <th>Temps de Gav/Prison</th>
                 <th>Inculpation retenue</th>
-                
                 <th>Amende reçu Total</th>
                 <th>Tig/Gav</th>
                 <th>Biens Saisie ?</th>
                 <th>Comparution devant Magistrat</th>
                 <th>Avocat </th>
                 <th>Cloturer par l'agent </th>
-                <th>Archivé ?</th>
+                <th>Status</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
         {% for annonce in annonces %}
-        {% if annonce.archives == 0 %}
+        
             <tr>
                 <td>{{ annonce.id }}</td>
-                <td>{{ annonce.title }}</td>
+               
+               {% if annonce.suspect.nom is defined %}
+                <td style="color:red">{{ annonce.suspect.nom }}</td>
+                {% endif %}
                 <td>{{ annonce.numero }}</td>
                 <td>{{ annonce.droit }}</td>
                 <td>{{ annonce.arrestation|raw }}</td>
@@ -43,10 +45,20 @@
                 <td>{{ annonce.amende }}</td>
                 <td><span class="badge badge-primary">{{ annonce.tigGav }}</span></td>
                 <td><span class="badge badge-primary">{{ annonce.biens }}</span></td>
-                <td><span class="badge badge-success">{% if annonce.comparution %}Oui</span>{% else %}<span class="badge badge-danger">Non{% endif %}</span></td>
+               <td> {% if annonce.comparution %}<span class="badge badge-success">Oui</span>{% else %}<span class="badge badge-danger">Non</span>{% endif %}</td>
                 <td><span class="badge badge-primary">{{ annonce.avocat }}</span></td>
                 <td><span class="badge badge-primary">{{ annonce.cloture }}</span></td>
-                <td>{% if annonce.archives %}Oui{% else %}Non{% endif %}</td>
+                <td>
+                {% if annonce.status.name == "En cours d'édition" %} 
+                    <span class="badge badge-warning">{{annonce.status.name}}</span>
+                {% elseif annonce.status.name == "A classer" %}
+                <span class="badge badge-success">{{ annonce.status.name }}</span>
+                {% elseif annonce.status.name == "Bloquer pour enquête" %}
+                 <span class="badge badge-danger">{{ annonce.status.name }}</span>
+                {% else %}
+                 <span class="badge badge-default">{{ annonce.status.name }}</span>
+                 {% endif %}
+                </td>
                 <td>
                     <a class="btn btn-info" href="{{ path('annonces_show', {'id': annonce.id}) }}">Voir</a>
                     {% if app.user.autorisationCasier > 0  %} 
@@ -59,7 +71,7 @@
                     {% endif %}
                 </td>
             </tr>
-            {% endif %}
+            
         {% else %}
             <tr>
                 <td colspan="4">Aucun Casier disponible</td>

@@ -30,7 +30,9 @@
         {% if annonce.archives >= 1 %}
             <tr>
                 <td>{{ annonce.id }}</td>
-                <td>{{ annonce.title }}</td>
+                {% for suspect in annonce.suspect %}
+                <td>{{ suspect.nomPrenom }}</td>
+                {% endfor %}
                 <td>{{ annonce.numero }}</td>
                 <td>{{ annonce.droit }}</td>
                 <td>{{ annonce.arrestation|raw }}</td>

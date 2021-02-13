@@ -28,15 +28,16 @@
       </li>
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         Casier
+         Casier/Suspect
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="{{ path('annonces_index') }}">Voir les casier</a>
-          <a class="dropdown-item" href="{{ path('annonces_archive') }}">Voir les archives</a>
+          <a class="dropdown-item" href="{{ path('suspect_index') }}">Voir la liste des suspect</a>
           <a class="dropdown-item" href="{{ path('annonces_new')}}">Crée un dossier</a>
+          <a class="dropdown-item" href="{{ path('annonces_index')}}">Voir tous les dossiers</a>
         </div>
       </li>
     </ul>
+
   </div>
 </nav>
        <div class="card"> {% block body %}{% endblock %}</div>

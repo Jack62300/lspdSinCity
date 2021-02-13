@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fiche Suspect{% endblock %}
+
+{% block body %}
+    <h1>Edition d'une fiche suspect</h1>
+
+    {{ include('suspect/_form.html.twig', {'button_label': 'Update', 'class': 'btn btn-warning'}) }}
+
+    <a class="btn btn-info" href="{{ path('suspect_index') }}">back to list</a>
+
+    {{ include('suspect/_delete_form.html.twig') }}
+{% endblock %}

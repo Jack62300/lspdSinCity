@@ -19,7 +19,7 @@ class Annonces
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $title;
 
@@ -84,10 +84,19 @@ class Annonces
      */
     private $cloture;
 
+    
+
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\ManyToOne(targetEntity=Suspect::class, inversedBy="casier")
      */
-    private $archives;
+    private $suspect;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Status::class, inversedBy="annonce")
+     */
+    private $status;
+
+
 
     public function __construct()
     {
@@ -275,14 +284,27 @@ class Annonces
         return $this;
     }
 
-    public function getArchives(): ?bool
+
+    public function getSuspect(): ?Suspect
     {
-        return $this->archives;
+        return $this->suspect;
     }
 
-    public function setArchives(?bool $archives): self
+    public function setSuspect(?Suspect $suspect): self
     {
-        $this->archives = $archives;
+        $this->suspect = $suspect;
+
+        return $this;
+    }
+
+    public function getStatus(): ?Status
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?Status $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

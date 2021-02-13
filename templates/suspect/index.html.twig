@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Suspect index{% endblock %}
+
+{% block body %}
+    <h1>Suspect index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom Prenom</th>
+                <th>Numero</th>
+                <th>Casier Judiciaire</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for suspect in suspects %}
+            <tr>
+                <td>{{ suspect.id }}</td>
+                <td>{{ suspect.nom }}</td>
+                <td>{{ suspect.numero }}</td>
+                <td><div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Liste des casiers
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for casier in suspect.casier %}
+                
+                    <a class="dropdown-item" href="{{ path('annonces_show', {'id': casier.id}) }}">{{ casier.id }}</a>
+                    
+               
+                {% endfor %}
+                 </div>
+                </div>
+                </td>
+                {# <td>{% for inculpation in suspect.casier.inculpation %}
+                    {{ inculpation|raw }}
+                    {% endfor %}</td>
+                <td> #}
+                <td>
+                    {% if app.user.autorisationCasier > 0  %} 
+                    <a class=" btn btn-warning" href="{{ path('suspect_edit', {'id': suspect.id}) }}">📝 </a>
+                    {% else %}
+
+                    {% endif %}
+                    <a class="btn btn-info" href="{{ path('suspect_show', {'id': suspect.id}) }}">👁‍🗨 </a>
+                    
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a  class="btn btn-success" href="{{ path('suspect_new') }}">Create new</a>
+{% endblock %}
